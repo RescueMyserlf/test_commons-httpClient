@@ -42,9 +42,10 @@ public class HttpClientPoolUtil {
 	 * @param url
 	 * @param params
 	 * @param charSets
+	 * @param headerMapper 请求头数据
 	 * @return
 	 */
-	public static String doGet(String url, Map<String, String> params, String charSets) {
+	public static String doGet(String url, Map<String, String> params, String charSets,Map<String,String> headerMapper) {
 		String charsetStr = charSets;
 		if (null == charSets) {
 			charsetStr = charset;
@@ -79,6 +80,13 @@ public class HttpClientPoolUtil {
 
 			getMethod = new GetMethod(url);
 			getMethod.setRequestHeader("charset", charsetStr);
+			
+			if(!CollectionUtils.isEmpty(headerMapper)){
+				for(Map.Entry<String,String> entry:map.entrySet()){
+					getMethod.setRequestHeader(entry.getKey(), entry.getValue());
+				    
+				}
+			}
 
 			int statusCode = httpClient.executeMethod(getMethod);
 			if (statusCode == HttpStatus.SC_OK) {
